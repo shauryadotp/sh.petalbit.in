@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# bun — https://sh.petalbit.in/cli/bun
+# curl -fsSL https://sh.petalbit.in/cli/bun | bash
+set -euo pipefail
+
+INSTALL_URL="https://bun.sh/install"
+BASHRC="${HOME}/.bashrc"
+MARKER="petalbit bun"
+
+need() { command -v "$1" >/dev/null 2>&1 || { echo "missing: $1" >&2; exit 1; }; }
+need curl
+
+echo "==> installing bun from ${INSTALL_URL}"
+curl -fsSL "$INSTALL_URL" | bash
+
+touch "$BASHRC"
+if ! grep -Fq "# >>> ${MARKER} >>>" "$BASHRC" 2>/dev/null; then
+  cat >> "$BASHRC" <<EOF
+
+# >>> ${MARKER} >>>
+export BUN_INSTALL="\$HOME/.bun"
+export PATH="\$HOME/.bun/bin:\$PATH"
+# <<< ${MARKER} <<<
+EOF
+  echo "==> appended bun PATH to ${BASHRC}"
+else
+  echo "==> bun PATH already present in ${BASHRC}"
+fi
+
+export BUN_INSTALL="${BUN_INSTALL:-$HOME/.bun}"
+export PATH="$HOME/.bun/bin:$PATH"
+
+# reload for this process (parent shells must source themselves)
+if [ -n "${BASH_VERSION:-}" ]; then
+  set +e
+  # shellcheck disable=SC1090
+  source "$BASHRC" >/dev/null 2>&1
+  set -e
+fi
+
+echo "==> bun ready. current shell: source ~/.bashrc"
+command -v bun >/dev/null 2>&1 && bun --version || true

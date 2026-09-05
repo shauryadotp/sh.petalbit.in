@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# agy — https://sh.petalbit.in/cli/agy
+# curl -fsSL https://sh.petalbit.in/cli/agy | bash
+set -euo pipefail
+
+INSTALL_URL="https://antigravity.google/cli/install.sh"
+BASHRC="${HOME}/.bashrc"
+MARKER="petalbit agy"
+
+need() { command -v "$1" >/dev/null 2>&1 || { echo "missing: $1" >&2; exit 1; }; }
+need curl
+
+mkdir -p "${HOME}/.local/bin"
+
+echo "==> installing agy from ${INSTALL_URL}"
+# official installer drops ~/.local/bin/agy and can also append PATH;
+# we still pin the same line ourselves
+curl -fsSL "$INSTALL_URL" | bash
+
+touch "$BASHRC"
+if ! grep -Fq "# >>> ${MARKER} >>>" "$BASHRC" 2>/dev/null; then
+  cat >> "$BASHRC" <<'EOF'
+
+# >>> petalbit agy >>>
+export PATH="$HOME/.local/bin:$PATH"
+# <<< petalbit agy <<<
+EOF
+  echo "==> appended agy PATH to ${BASHRC}"
+else
+  echo "==> agy PATH already present in ${BASHRC}"
+fi
+
+export PATH="$HOME/.local/bin:$PATH"
+
+if [ -n "${BASH_VERSION:-}" ]; then
+  set +e
+  # shellcheck disable=SC1090
+  source "$BASHRC" >/dev/null 2>&1
+  set -e
+fi
+
+echo "==> agy ready. current shell: source ~/.bashrc"
+command -v agy >/dev/null 2>&1 && agy --version || true

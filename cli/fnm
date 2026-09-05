@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# fnm — https://sh.petalbit.in/cli/fnm
+# curl -fsSL https://sh.petalbit.in/cli/fnm | bash
+set -euo pipefail
+
+INSTALL_URL="https://fnm.vercel.app/install"
+BASHRC="${HOME}/.bashrc"
+MARKER="petalbit fnm"
+FNM_DIR="${HOME}/.fnm"
+
+need() { command -v "$1" >/dev/null 2>&1 || { echo "missing: $1" >&2; exit 1; }; }
+need curl
+
+mkdir -p "$FNM_DIR"
+
+echo "==> installing fnm from ${INSTALL_URL} into ${FNM_DIR}"
+# pin install dir so it matches the bashrc block; skip official shell edits
+curl -fsSL "$INSTALL_URL" | bash -s -- --install-dir "$FNM_DIR" --skip-shell \
+  || curl -fsSL "$INSTALL_URL" | bash -s -- -d "$FNM_DIR" -s \
+  || curl -fsSL "$INSTALL_URL" | bash
+
+touch "$BASHRC"
+if ! grep -Fq "# >>> ${MARKER} >>>" "$BASHRC" 2>/dev/null; then
+  cat >> "$BASHRC" <<'EOF'
+
+# >>> petalbit fnm >>>
+FNM_PATH="/home/$USER/.fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="$FNM_PATH:$PATH"
+  eval "$(fnm env --shell bash)"
+fi
+# <<< petalbit fnm <<<
+EOF
+  echo "==> appended fnm PATH to ${BASHRC}"
+else
+  echo "==> fnm PATH already present in ${BASHRC}"
+fi
+
+export PATH="$FNM_DIR:$PATH"
+if command -v fnm >/dev/null 2>&1; then
+  eval "$(fnm env --shell bash)" || true
+fi
+
+if [ -n "${BASH_VERSION:-}" ]; then
+  set +e
+  # shellcheck disable=SC1090
+  source "$BASHRC" >/dev/null 2>&1
+  set -e
+fi
+
+echo "==> fnm ready. current shell: source ~/.bashrc"
+command -v fnm >/dev/null 2>&1 && fnm --version || true

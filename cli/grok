@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# grok — https://sh.petalbit.in/cli/grok
+# curl -fsSL https://sh.petalbit.in/cli/grok | bash
+set -euo pipefail
+
+INSTALL_URL="https://x.ai/cli/install.sh"
+BASHRC="${HOME}/.bashrc"
+MARKER="petalbit grok"
+
+need() { command -v "$1" >/dev/null 2>&1 || { echo "missing: $1" >&2; exit 1; }; }
+need curl
+
+echo "==> installing grok from ${INSTALL_URL}"
+curl -fsSL "$INSTALL_URL" | bash
+
+touch "$BASHRC"
+if ! grep -Fq "# >>> ${MARKER} >>>" "$BASHRC" 2>/dev/null; then
+  cat >> "$BASHRC" <<'EOF'
+
+# >>> petalbit grok >>>
+export PATH="$HOME/.grok/bin:$PATH"
+# <<< petalbit grok <<<
+EOF
+  echo "==> appended grok PATH to ${BASHRC}"
+else
+  echo "==> grok PATH already present in ${BASHRC}"
+fi
+
+export PATH="$HOME/.grok/bin:$PATH"
+
+if [ -n "${BASH_VERSION:-}" ]; then
+  set +e
+  # shellcheck disable=SC1090
+  source "$BASHRC" >/dev/null 2>&1
+  set -e
+fi
+
+echo "==> grok ready. current shell: source ~/.bashrc"
+command -v grok >/dev/null 2>&1 && grok --version || true
