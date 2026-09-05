@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # agy — https://sh.petalbit.in/cli/agy
 # curl -fsSL https://sh.petalbit.in/cli/agy | bash
+# source: https://antigravity.google/cli/install.sh
 set -euo pipefail
 
 INSTALL_URL="https://antigravity.google/cli/install.sh"

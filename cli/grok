@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # grok — https://sh.petalbit.in/cli/grok
 # curl -fsSL https://sh.petalbit.in/cli/grok | bash
+# source: https://x.ai/cli/install.sh
 set -euo pipefail
 
 INSTALL_URL="https://x.ai/cli/install.sh"

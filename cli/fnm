@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # fnm — https://sh.petalbit.in/cli/fnm
 # curl -fsSL https://sh.petalbit.in/cli/fnm | bash
+# source: https://fnm.vercel.app/install
 set -euo pipefail
 
 INSTALL_URL="https://fnm.vercel.app/install"

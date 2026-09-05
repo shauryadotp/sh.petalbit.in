@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # bun — https://sh.petalbit.in/cli/bun
 # curl -fsSL https://sh.petalbit.in/cli/bun | bash
+# source: https://bun.sh/install
 set -euo pipefail
 
 INSTALL_URL="https://bun.sh/install"
