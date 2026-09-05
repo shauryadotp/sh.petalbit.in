@@ -1,0 +1,6 @@
+# https://sh.petalbit.in/robots.txt
+
+User-agent: Yuuki-Ai_WebTool
+Allow: /
+
+Sitemap: https://sh.petalbit.in/sitemap.xml

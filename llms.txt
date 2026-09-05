@@ -1,0 +1,24 @@
+# sh.petalbit.in
+
+> Curl-pipe bash wrappers that install CLI tools from their official sources, then pin PATH in `~/.bashrc`.
+
+This host is a static script drop. Each `/cli/<name>` URL is a bash installer. Run them with:
+
+```
+curl -fsSL https://sh.petalbit.in/cli/<name> | bash
+```
+
+Every script: requires `curl`; fetches the upstream installer; appends a `# >>> petalbit <name> >>>` block to `~/.bashrc` if missing; exports PATH for the current process; prints the installed version when the binary is on PATH. Parent shells must `source ~/.bashrc`. Idempotent on the bashrc marker.
+
+## Scripts
+
+- [agy](https://sh.petalbit.in/cli/agy): Google Antigravity CLI. Source: https://antigravity.google/cli/install.sh. Binary: `~/.local/bin/agy`.
+- [bun](https://sh.petalbit.in/cli/bun): Bun runtime. Source: https://bun.sh/install. Binary: `~/.bun/bin/bun`. Sets `BUN_INSTALL`.
+- [fnm](https://sh.petalbit.in/cli/fnm): Fast Node Manager. Source: https://fnm.vercel.app/install. Install dir: `~/.fnm`. Tries `--install-dir`/`--skip-shell`, then `-d`/`-s`, then a plain install. bashrc runs `fnm env --shell bash`.
+- [grok](https://sh.petalbit.in/cli/grok): xAI Grok CLI. Source: https://x.ai/cli/install.sh. Binary: `~/.grok/bin/grok`.
+
+## Index
+
+- [home](https://sh.petalbit.in/): script list
+- [sitemap](https://sh.petalbit.in/sitemap.xml)
+- [robots](https://sh.petalbit.in/robots.txt)
